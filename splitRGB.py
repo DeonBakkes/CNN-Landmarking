@@ -23,7 +23,7 @@ for file in os.listdir(folder):
         g = [(0,d[1],0) for d in data]
         b = [(0,0,d[2]) for d in data]
 
-        img.putdata(r) # if i make a second batch of these below in for loop and add constant to r,g or b (r + 25) I can probably do the other data aug....
+        img.putdata(r)
         img.save(os.path.join(folder, 'red' + file))
         img.putdata(g)
         img.save(os.path.join(folder, 'green' + file))
@@ -114,26 +114,3 @@ os.remove(output_csv_blue)
 
 
 print 'Finish!'
-#img = Image.open(r'C:\CNNlandmarking/DN26afgan_AFG_tur_a1.JPG')
-#data = img.getdata()
-
-#r = [(d[0],0,0) for d in data]
-#g = [(0,d[1],0) for d in data]
-#b = [(0,0,d[2]) for d in data]
-
-#img.putdata(r)
-#img.save(os.path.join(folder, 'r.jpg'))
-#img.putdata(g)
-#img.save(os.path.join(folder, 'g.jpg'))
-#img.putdata(b)
-#img.save(os.path.join(folder, 'b.jpg'))
-
-
-
-
-
-#import os
-
-#for file in os.listdir('.'):
-#    if fnmatch.fnmatch(file, '*.txt'):
-#        print file

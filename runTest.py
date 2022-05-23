@@ -25,8 +25,6 @@ except ImportError:
 import os
 import sys
 import numpy as np
-#from lasagne import layers
-#from nolearn.lasagne import NeuralNet
 from matplotlib import pyplot
 from readCSV import loaddata, load2d
 from utils import AdjustVariable, plot_sample, draw_loss_2, write_file
@@ -39,8 +37,6 @@ import tkSimpleDialog
 root = Tkinter.Tk()
 root.withdraw()
 dirname = tkFileDialog.askdirectory(parent=root,initialdir="/",title='Please select your directory with TESTING and TRAINING folders for CNN landmarking')
-
-#FMODEL = '/data3/linhlv/OUTPUT2/2018/tete/fine_tuning/run_train_10landmarks/cnnmodel_10_output_fine_tuning_unfreeze_'
 
 FTEST = os.path.join(dirname, "testing/scaled")
 
@@ -59,13 +55,9 @@ def loadCSV(fname = None):
 def extract_fileNames(imagePaths):
     paths = imagePaths.values
     alist=[]
-    #print paths
-    #rint imagePaths
-    #print imagePaths[0]
-
 
     for i in range(len(paths)):
-        #print str(imagePaths[i])
+
         head, tail = os.path.split(str(imagePaths[i]))
         alist.append(tail)
 
@@ -82,14 +74,12 @@ diagnostic_feature_name = tkSimpleDialog.askstring(title="Diagnostic feature",
 
 DATA=[diagnostic_feature_name]
 
-#pickle_file_from_training = tkFileDialog.askopenfilename(parent=root,initialdir=fineTuning_dir,title='Please select pickle file for CNN landmarking (from fineTuning run)')
-pickle_file_from_training = os.path.join(fineTuning_dir, diagnostic_feature_name + '.pickle')
-#filename = FSAVEFOLDER + 'landmarks/cnnmodel_10_output_fine_tuning_unfreeze_'#.txt
 
-#DATA=['spiracle']     #   DATA=['v10','v11','v12','v14','v15','v16','v17','v18','v19']
+pickle_file_from_training = os.path.join(fineTuning_dir, diagnostic_feature_name + '.pickle')
+
+
 for i in DATA:
     fmodelf = pickle_file_from_training
-    #fmodelf = r'C:\Deon\Spiracles FULL RES\spiracle.pickle'
 
     ftestf = os.path.join(FTEST, i + '.csv')
     flandmarks = diagnostic_feature_name + '.txt'
@@ -100,39 +90,34 @@ for i in DATA:
     with open(fmodelf, 'rb') as f:
 		net = pickle.load(f)
 
-    #net = joblib.load(fmodelf)
 
     X, _ = load2d(ftestf,test=True)
     y_pred = net.predict(X)
 
-	# try to display the estimated landmarks on images
+
     paths = loadCSV(ftestf)
     fileNames = extract_fileNames(paths)
 
     for i in range(len(y_pred)):
         predi = y_pred[i]
-        #filename = FSAVEFOLDER + FNAMES[j]
-        #name = os.path.splitext(fileNames[j])[0]
-        #flandmarks = os.path.join(FSAVEFOLDER, name + diagnostic_feature_name + '.txt')
-        #write_file(flandmarks, predi)
-        #write_file(filename,"\n")
+
         saveImg = os.path.join(FSAVEIMAGES, fileNames[i])
         fig = pyplot.figure()
         ax = fig.add_subplot(1, 1, 1, xticks=[], yticks=[])
         plot_sample(X[i],predi,ax)
         fig.savefig(saveImg)
         pyplot.close(fig)
-        #print predi
+
 
     #print net
-#diagnostic_feature_name + '.txt' by flandmarks below maybe...
+
     for j in range(len(y_pred)):
         predi = y_pred[j]
-        #filename = FSAVEFOLDER + FNAMES[j]
+
         name = os.path.splitext(fileNames[j])[0]
         flandmarks = os.path.join(FSAVEFOLDER, name + '_' + diagnostic_feature_name + '.txt')
         write_file(flandmarks, predi)
-        #write_file(filename,"\n")
+
 
     print('Finish!')
 '''

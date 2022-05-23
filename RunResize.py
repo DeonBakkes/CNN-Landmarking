@@ -1,7 +1,6 @@
 from PIL import Image
 import os, sys
 import glob
-#####
 import Tkinter, tkFileDialog
 import tkSimpleDialog
 import os
@@ -11,13 +10,10 @@ import fnmatch
 root = Tkinter.Tk()
 root.withdraw()
 dirname = tkFileDialog.askdirectory(parent=root,initialdir="/",title='Please select your directory with TESTING and TRAINING folders for CNN landmarking')
-#######
+
 
 path_Training = os.path.join(dirname, "Training")
 path_Testing = os.path.join(dirname, "Testing")
-#path_Training = r"C:\Deon\Spiracles FULL RES\Training"
-#path_Testing = r"C:\Deon\Spiracles FULL RES\testing"
-#original_csv = os.path.join(path_Training, "spiracle.csv")
 original_csv = tkFileDialog.askopenfilename(parent=root,initialdir=path_Training,title='Please select csv file with training landmark data')
 
 if not os.path.exists(os.path.join(path_Testing,"scaled")):
@@ -39,7 +35,7 @@ file2 = open(scaled_csv,"w")
 
 scale_percent = tkSimpleDialog.askinteger(title="Scale images",
                                   prompt="Scale percent?:")
-#scale_percent = 10
+
 
 
 if not os.path.exists(output_Training):
@@ -101,7 +97,7 @@ resize_landmarks(file1, file2)
 
 path_Testing_scaled = os.path.join(path_Testing, "scaled")
 testing_scaled_csv = os.path.join(path_Testing_scaled, diagnostic_feature_name + ".csv")
-#path = 'C:/Deon/Spiracles FULL RES/testing/scaled'
+
 
 with open(testing_scaled_csv, 'wb') as csvfile:
   writer = csv.writer(csvfile)
@@ -110,22 +106,3 @@ with open(testing_scaled_csv, 'wb') as csvfile:
     for filename in files:
         if not fnmatch.fnmatch(filename, '*.csv'):
             writer.writerow([filename, os.path.join(root,filename)])
-
-
-#for root, dirs, files in os.walk(path_Testing_scaled):
-#    for filename in files:
-#        if not fnmatch.fnmatch(filename, '*.csv'):
-
-
-#with open(testing_scaled_csv, 'wb') as csvfile:
-#  writer = csv.writer(csvfile)
-#  writer.writerow(['ImageId', 'Image'])
-#  for root, dirs, images in os.walk(path_Testing_scaled):
-#    for filename in images:
-#        writer.writerow([filename, os.path.join(root,filename)])
-
-#f = open(testing_scaled_csv, "r+")
-#lines = f.readlines()
-#lines=lines[:-1]
-#f = open(testing_scaled_csv, "w+")
-#f.writelines(lines)

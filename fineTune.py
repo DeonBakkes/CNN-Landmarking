@@ -19,10 +19,6 @@
 '''
 
 
-#import sys
-#sys.path.append(r"C:\Deon\envs\theano")
-#import os
-#os.chdir(r"C:\Deon\envs\theano")
 
 
 try:
@@ -46,7 +42,6 @@ from sklearn.externals import joblib
 import Tkinter, tkFileDialog
 import tkSimpleDialog
 
-#datafilename = 'C:/Deon/Spiracles FULL RES/testing/scaled/spiracle.csv'
 
 root = Tkinter.Tk()
 root.withdraw()
@@ -78,15 +73,10 @@ ncol = first_line.count(',')
 print ncol, "x & y co-ordinates"
 
 
-# CONSTANT: the path to the trained model
-#FMODEL = '/home/linh/Examples/trained_models/trained_Beetles/cnnmodel3_all_10000_epochs_.pickle'
-
-#FMODEL = r"C:\Deon\Spiracles FULL RES\spiracle.pickle"
-#FMODEL = tkFileDialog.askopenfilename(parent=root,initialdir=dirname,title='Please select pickle file from training run')
 FMODEL = os.path.join(dirname, diagnostic_feature_name + '.pickle')
 
 os.chdir(output_Training)
-#glob.glob("*.JPG")
+
 img = Image.open(glob.glob("*.JPG")[0])
 width, height = img.size
 print "Height", height, "Width", width
@@ -111,7 +101,7 @@ epochs = tkSimpleDialog.askinteger(title="Epochs",
 def build_model():
 	net = {}
 	net['input'] = lasagne.layers.InputLayer((None,1,images_height,images_width))
-	#net['drop_input'] = lasagne.layers.DropoutLayer(net['input'],p=0.1)
+
 	net['conv1'] = lasagne.layers.Conv2DLayer(net['input'], 32, (3,3),pad=1)
 	net['pool1'] = lasagne.layers.MaxPool2DLayer(net['conv1'],pool_size=(2,2))
 	net['drop2'] = lasagne.layers.DropoutLayer(net['pool1'],p=0.4)
@@ -162,15 +152,15 @@ def build_fine_tuning_model(nlayers):
 
 		# learning parameters
 		update= lasagne.updates.nesterov_momentum,
-		#update_learning_rate=theano.shared(np.float32(0.1)),
-		#update_momentum=theano.shared(np.float32(0.9)),
+
+
 		update_learning_rate = 0.01,
 		update_momentum = 0.9,
 		regression=True,
-		#on_epoch_finished = [
-		#	AdjustVariable('update_learning_rate', start = 0.1, stop = 0.0001),
-		#	AdjustVariable('update_momentum', start = 0.9, stop = 0.9999),
-		#],
+
+
+
+
 		max_epochs = epochs, # maximum iteration
 		train_split = TrainSplit(eval_size=0.4),
 		verbose=1,
@@ -213,14 +203,10 @@ if __name__ == '__main__':
 	sys.setrecursionlimit(150000)
 	with open(os.path.join(path_FineTuning, diagnostic_feature_name + '.pickle'),'wb') as f:
 		pickle.dump(net2,f,-1)
-##	with open(r'C:\Deon\Spiracles FULL RES\results_fineTuning\fine_tune_.pickle','wb') as f:
-##		pickle.dump(net2,f,-1)
-	#joblib.dump(net2, os.path.join(path_FineTuning, diagnostic_feature_name + ".pickle"), compress=False)
-	#joblib_model = joblib.load(r'C:\Deon\Spiracles FULL RES\results_fineTuning\fine_tune_.pickle')
+
 
 	# draw the loss
 	draw_loss_2(net2, saveloss)
-	#test(joblib_model,ftest,savetest)
 
 	# test the fine-tuning network and draw the results
 	X, _ = load2d(FTESTF,test=True)

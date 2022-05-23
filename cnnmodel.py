@@ -33,13 +33,7 @@ from readCSV import loaddata, load2d
 from utils import AdjustVariable, plot_sample, draw_loss_2, test
 import theano
 from sklearn.externals import joblib
-#from runTraining import FTEST_FIX
-#from runTraining import FTRAIN_FIX
-#make inputs for image height, image width, --> leave model parameters to be edited in pyscripter
 
-#mamke thingy to get width independandty from path and image...
-#images_height = 193
-#images_width = 258
 height_txt = open('C:\\CNNlandmarking\\images_height.txt', "r")
 width_txt = open('C:\\CNNlandmarking\\images_width.txt', "r")
 
@@ -47,18 +41,17 @@ images_height = int(height_txt.readline())
 images_width = int(width_txt.readline())
 patience = 40
 print "patience", patience
-#early_stopping = EarlyStopping(patience = 10)
-# try add pad=1 to layers.Conv2DLayer(l_aug,num_filters=32,filter_size=(3,3),pad=1)
+
 '''
     Define the structure of CNN.
     Parameters:
         - npochs: number of epochs
 '''
 def create_network(landmarks, npochs):
-	#l_in = layers.InputLayer((None,1,192,256))
-                                    #height #width
+
+
 	l_in = layers.InputLayer((None,1,images_height,images_width))
-	#l_drop_in = layers.DropoutLayer(l_in,p=0.2)
+
 
 	l_conv1 = layers.Conv2DLayer(l_in,num_filters=32,filter_size=(3,3),pad=1)
 	l_pool1 = layers.MaxPool2DLayer(l_conv1,pool_size=(2,2))
@@ -75,7 +68,7 @@ def create_network(landmarks, npochs):
 	l_den1 = layers.DenseLayer(l_drop3,num_units=1000)
 	l_drop4 = layers.DropoutLayer(l_den1,p=0.6)
 	l_den2 = layers.DenseLayer(l_drop4,num_units=1000)
-	#l_output = layers.DenseLayer(l_den2,num_units=16, nonlinearity=None)
+
 	l_output = layers.DenseLayer(l_den2,num_units=landmarks, nonlinearity=None)
 
 	net = NeuralNet(
@@ -89,8 +82,8 @@ def create_network(landmarks, npochs):
 				AdjustVariable('update_learning_rate', start=0.03, stop = 0.00001),
 				AdjustVariable('update_momentum',start = 0.9, stop = 0.9999),
                 EarlyStopping(patience),],
-            #early_stopping = EarlyStopping(patience)
-            #on_training_finished=[LoadBestWeight(EarlyStopping(patience))],
+
+
             max_epochs=npochs, # maximum iteration
 			train_split = TrainSplit(eval_size=0.4),
 			verbose=1,
@@ -115,10 +108,10 @@ def train(landmarks, ftrain,ftest,epochs,savemodel,saveloss,savetest):
 	with open(savemodel,'wb') as f:
 		pickle.dump(net3,f,-1)
 
-	#savemodel = r"C:\Deon\Spiracles FULL RES\joblib_file.pkl"
-	#joblib.dump(net3, savemodel, compress=False)
 
-	#joblib_model = joblib.load(savemodel)
+
+
+
 	draw_loss_2(net3,saveloss)
 	test(net3,ftest,savetest)
 

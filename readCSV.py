@@ -25,20 +25,13 @@ import numpy as np
 from pandas.io.parsers import read_csv
 from sklearn.utils import shuffle
 
-#FTRAIN = r"L:\Deon\CNN landmarking first try\Ornithodoros train.csv"
-#FTRAIN_FIX = r'C:\Try in new folder\Training\scaled'
-#FTEST_FIX = r'C:\Try in new folder\testing\scaled'
-
-#mamke thingy to get width independandty from path and image...
-#images_height = 193
-#images_width = 258
 height_txt = open('C:\\CNNlandmarking\\images_height.txt', "r")
 width_txt = open('C:\\CNNlandmarking\\images_width.txt', "r")
 
 images_height = int(height_txt.readline())
 images_width = int(width_txt.readline())
 
-#print "Height", images_height, "Width", images_width
+
 
 def readImage(arrayImgs):
     X = arrayImgs.values
@@ -55,19 +48,12 @@ def readImage(arrayImgs):
 #scale the target to [-1,1]
 def scaleTarget(target):
     print('Normalize target...')
-    #print target
-    #print target.shape
-    #evencol = (target[:,::2] - 128)/128    # LE 192,256
-    #ddcol = (target[:,1::2] - 96)/96
+
     value1 = images_width/2 #width
     value2 = images_height/2  #height
     evencol = (target[:,::2] - value1)/value1
     oddcol = (target[:,1::2] - value2)/value2
-    #print ""
-    #print "evencol", len(evencol), evencol[0], evencol.shape[0], evencol.shape[1]
-    #print ""
-    #print "oddcol", len(oddcol), oddcol[0], oddcol.shape[0], oddcol.shape[1]
-    #print ""
+
     rs = np.empty((evencol.shape[0],evencol.shape[1] + oddcol.shape[1]))
     rs[:,::2] = evencol
     rs[:,1::2] = oddcol
@@ -82,53 +68,40 @@ def scaleTarget(target):
             target[i] = targeti
     '''
     return rs
-# try make value1 and value 2 in multi-line string above
+
 def loaddata(fname = None,test=False):
     if fname == None:
         fname = FTEST_FIX if test else FTRAIN_FIX
     df = read_csv(os.path.expanduser(fname))
-    #print df
-    #df = read_csv(os.path.expanduser(FTRAIN))
+
+
     print fname, "loaddata"
     df = df.dropna()
     imagePath = df['Image']
-    #print imagePath[0]
-    #print imagePath[1]
+
+
     X = readImage(imagePath)
     if not test:
-        #y = df[df.columns[:-1]].values # why did LE have this and Philip another?
+
         y = df[df.columns[1:]].values
         y = y.astype(np.float32)
-        #print y[0]
-        #print y[1]
+
+
         y = scaleTarget(y)
-        #print X[1]
-        #print y[1]
+
+
         X,y = shuffle(X,y,random_state=42)
         y = y.astype(np.float32)
-        #print X
-        #print 'break'
         #print y
     else:
         y = None
     return X,y
 
 
-
-
-
-# test loaddata method
-#X,y = loaddata()
-#print("X.shape == {}; X.min == {:.3f}; X.max == {:.3f}".format(
-#    X.shape, X.min(), X.max()))
-#print("y.shape == {}; y.min == {:.3f}; y.max == {:.3f}".format(
-#    y.shape, y.min(), y.max()))
-
-# reshape (convert) the data from 49152 to 192x256 (h x w)
 def load2d(fname=None,test=False):
     print fname, "load2d"
     X,y = loaddata(fname, test=test)
-    #X = X.reshape(-1,1,192,256)
+
     X = X.reshape(-1,1, images_height, images_width)
     if not test:
         print("X.shape == {}; X.min == {:.3f}; X.max == {:.3f}".format(X.shape, X.min(), X.max()))

@@ -24,9 +24,6 @@ import numpy as np
 from matplotlib import pyplot
 from readCSV import load2d
 
-# drawing the loss of train and valid to predict overfitting
-# the data is stored in train_histogry_ of the network
-
 height_txt = open('C:\\CNNlandmarking\\images_height.txt', "r")
 width_txt = open('C:\\CNNlandmarking\\images_width.txt', "r")
 
@@ -64,10 +61,9 @@ def test(net,ftest,fsave):
 
 # draw a result sample
 def plot_sample(x, y, axis):
-    img = x.reshape(images_height, images_width) # add ',3' after width for rgb & grayscale has no value at all
+    img = x.reshape(images_height, images_width)
     axis.imshow(img, cmap='gray')
-    #, cmap='gray'
-    #axis.scatter(y[0::2], y[1::2], marker='x', s=10)
+
     value1 = images_width/2
     value2 = images_height/2
     axis.scatter((y[::2] * value1) + value1, (y[1::2] * value2) + value2, color='red', marker='x', s=8)
@@ -86,7 +82,7 @@ def plot_weights(weights):
 # write the predicted landmarks into a file
 def write_file(filename,y_predict):
 	f = open(filename,'a+')
-	#f.write('\n')
+
 	for j in range(len(y_predict)):
 		f.write(str(y_predict[j]))
 		if j%2 == 0:
